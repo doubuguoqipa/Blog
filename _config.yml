@@ -59,6 +59,7 @@ category_map:
   服务器配置: server-setting
 tag_map:
   nginx: nginx
+  Letsencrypt: Letsencrypt
   
 # Date / Time format
 ## Hexo uses Moment.js to parse and display date
