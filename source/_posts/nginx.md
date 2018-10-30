@@ -7,7 +7,7 @@ tags:
   - Nginx
   - Letsencrypt
 date: 2018-10-30 10:35:24
-permalink:
+permalink: 20181030-103524
 ---
 
 ## 安装nginx
