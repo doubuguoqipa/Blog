@@ -1,5 +1,5 @@
 ---
-title: git
+title: 服务器配置Git仓库
 categories:
   - 服务器配置
 tags:
