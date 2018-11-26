@@ -7,7 +7,12 @@ tags:
   - Windows
 date: 2018-11-26 11:05:14
 ---
+### Centos
+
+
+
 #### 查看防火墙状态 iptables
+
 需自行安装
 
 ```
@@ -57,5 +62,13 @@ ps aux |  egrep  "sql|nginx|tomcat|oracle|weblogic|mysql"
 
 ```
 passwd 
+```
+
+### Windows
+
+#### 修改windows远程桌面端口号
+
+```
+https://blog.echainnet.com/2018/11/26/centoscmd/winport.bat
 ```
 
