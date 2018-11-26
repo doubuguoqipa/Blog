@@ -61,6 +61,7 @@ category_map:
   Docker: Docker
 tag_map:
   nginx: nginx
+  centos: centos
   Letsencrypt: Letsencrypt
   Windows: Windows
   
