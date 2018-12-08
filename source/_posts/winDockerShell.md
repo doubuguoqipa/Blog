@@ -50,6 +50,23 @@ docker run -d --shm-size=2g -p 1521:1521 -p 18080:8080 alexeiled/docker-oracle-x
 > user: admin 
 > password: oracle (首次登录需要更改密码：123456)
 
+4. PL/SQL Developer
+
+连接Oracle，需下载oracle instance client解压，并配置instance client:
+   在instance client目录中新建名为network的文件夹，并在network目录下新建admin文件夹，在admin文件夹下新建tnsnames.ora文件，使用记事本编写：
+   xe = 
+   (DESCRIPTION = 
+       (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 49161)) 
+       (CONNECT_DATA = 
+         (SERVICE_NAME = XE) 
+       ) 
+   ) 
+其中第一行中的XE是oracle数据库的实例名。
+SERVICE_NAME后填写oracle的服务名，可在容器中用lsnrctl status查看，这里我们填写XE。
+打开PL/SQL Developer客户端（此时仍无法登陆，关闭登录窗口以未登录状态打开即可），选择Tools-》Preferences,将Oracle Home和OCI Liabrary两栏中填入instance client所在的路径和OCI文件所在路径（oci.dll在instance client目录下），重启PL/SQL Developer。
+
+5. oracle数据库导入sql时需修改sql脚本中的user用户名，或者先创建一个用户名，分配connect、resource、dba权限，然后运行sql脚本导入。
+
 ### 附录： 常用命令
 
 docker image ls (-a)  查看镜像
