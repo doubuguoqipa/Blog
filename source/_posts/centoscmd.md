@@ -30,6 +30,24 @@ firewall-cmd --list-ports
 
 ```
 
+#### firewall-cmd 添加端口
+
+```
+firewall-cmd --permanent --zone=public --add-port=22/tcp
+```
+
+#### firewall-cmd查看所有打开的端口：
+
+```
+firewall-cmd --zone=public --list-ports
+```
+
+#### firewall-cmd更新防火墙规则：
+
+```
+firewall-cmd --reload
+```
+
 #### 列出所有端口
 
 ```
