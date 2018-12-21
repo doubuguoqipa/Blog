@@ -23,16 +23,144 @@ docker search oracle
 2. 下载镜像
 
 ````
+2G大小
 docker pull alexeiled/docker-oracle-xe-11g
 ````
-
+```
+6G大小
+docker pull registry.cn-hangzhou.aliyuncs.com/helowin/oracle_11g
+```
 3. 使用镜像
 
 用[https://dashboard.daocloud.io/packages/explore](https://link.jianshu.com?t=https%3A%2F%2Fdashboard.daocloud.io%2Fpackages%2Fexplore) 对镜像进行搜索，或者直接上官网也可以。
 
 ```powershell
-docker run -d --shm-size=2g -p 1521:1521 -p 18080:8080 alexeiled/docker-oracle-xe-11g
+docker run -itd --name oraclexu --shm-size=4g -p 1521:1521 -p 18080:8080 alexeiled/docker-oracle-xe-11g /bin/bash
+
+docker ps -a
+
+docker cp libsys.dmp oraclexu:/usr/local/
+
+docker exec -it oraclexu bash
+
 ```
+启动数据库
+
+```
+su oracle
+
+mkdir /u01/app/oracle/oradata/XE/datafile
+
+sqlplus / as sysdba 
+
+startup
+
+```
+查看字符集并修改ZHS16GBK
+```
+select userenv('language') from dual;
+
+shutdown immediate;
+
+startup mount;
+
+ALTER SYSTEM ENABLE RESTRICTED SESSION;
+
+ALTER SYSTEM SET JOB_QUEUE_PROCESSES=0;
+
+ALTER SYSTEM SET AQ_TM_PROCESSES=0;
+
+alter database open;
+
+ALTER DATABASE character set INTERNAL_USE ZHS16GBK;
+
+shutdown immediate;
+
+startup;
+
+select userenv('language') from dual;
+
+exit
+
+export NLS_LANG=AMERICAN_AMERICA.ZHS16GBK
+```
+创建新用户
+
+```
+sqlplus / as sysdba 
+
+创建操作目录
+create directory libsys AS '/u01/app/oracle/oradata/XE/datafile';
+创建表空间
+create tablespace libsys logging datafile '/u01/app/oracle/oradata/XE/datafile/libsys.dbf' size 5G autoextend on next 32m maxsize 20G extent management local;
+
+CREATE USER LIBSYS IDENTIFIED BY "libsys" ACCOUNT UNLOCK DEFAULT TABLESPACE libsys;
+
+GRANT DBA,connect,resource TO LIBSYS;
+
+exit
+```
+导入dmp文件
+```
+imp libsys/libsys file= /usr/local/libsys.dmp log=/tmp/libsys.log full = y statistics=none GRANTS = N;
+```
+启动监听
+修改listener.ora(注意HOST不是127.0.0.1，而是docker内部分配的HOSTNAME)
+```
+vi /etc/hosts查看 hostname
+
+/etc/hosts文件内容如下，每个容器都不一样，需要查找一下：
+127.0.0.1       localhost
+::1     localhost ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+172.17.0.2      37adf0929838
+
+
+
+listener.ora内容如下:
+# listener.ora Network Configuration File:
+SID_LIST_LISTENER =
+  (SID_LIST =
+    (SID_DESC =
+      (SID_NAME = PLSExtProc)
+      (ORACLE_HOME = /u01/app/oracle/product/11.2.0/xe)
+      (PROGRAM = extproc)
+    )
+    (SID_DESC =
+        (GLOBAL_DBNAME = XE)
+        (ORACLE_HOME = /u01/app/oracle/product/11.2.0/xe)
+        (SID_NAME = XE)
+    )
+)
+
+LISTENER =
+  (DESCRIPTION_LIST =
+    (DESCRIPTION =
+      (ADDRESS = (PROTOCOL = IPC)(KEY = EXTPROC_FOR_XE))
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 37adf0929838)(PORT = 1521))
+    )
+  )
+
+DEFAULT_SERVICE_LISTENER = (XE)
+```
+启动监听
+```
+lsnrctl start
+
+```
+启动数据库
+```
+sqlplus '/as sysdba'
+startup
+连接到数据库查看内容
+```
+
+docker ps -a
+docker cp libsys.dmp oraclexu:/usr/local/
+docker exec -it oraclexu bash
 
 > Connect 
 > Connect database with following setting:  
