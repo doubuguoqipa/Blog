@@ -64,6 +64,7 @@ tag_map:
   centos: centos
   Letsencrypt: Letsencrypt
   Windows: Windows
+  Hyper-V: Hyper-V
   
 # Date / Time format
 ## Hexo uses Moment.js to parse and display date
