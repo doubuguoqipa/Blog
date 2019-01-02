@@ -10,6 +10,10 @@ date: 2018-11-22 10:50:53
 ### mysql5.7安装
 ```powershell
 docker run --name mysql5.7 -v C:\Users\*\Documents\Docker\Mysql:/var/lib/mysql -v C:\Users\*\Documents\Docker\MysqlConf:/etc/mysql/conf.d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7
+docker exec -it mysql5719 bash
+mysql -u root -p
+grant all privileges on *.* to root@"%" identified by "password" with grant option; 
+flush privileges; 
 ```
 
 ### oracle 11g 安装
