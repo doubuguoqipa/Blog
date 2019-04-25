@@ -59,6 +59,7 @@ category_map:
   服务器配置: server-setting
   急救知识培训: FirstAidTraining
   Docker: Docker
+  一卡通: Ipass
 tag_map:
   nginx: nginx
   centos: centos
